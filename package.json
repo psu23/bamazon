@@ -1,0 +1,19 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/psu23/bamazon.git"
+  },
+  "author": "Patrick Urbankowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/psu23/bamazon/issues"
+  },
+  "homepage": "https://github.com/psu23/bamazon#readme"
+}
