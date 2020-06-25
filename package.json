@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/psu23/bamazon/issues"
   },
-  "homepage": "https://github.com/psu23/bamazon#readme"
+  "homepage": "https://github.com/psu23/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^7.2.0",
+    "mysql": "^2.18.1"
+  }
 }
