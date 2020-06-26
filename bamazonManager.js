@@ -105,11 +105,12 @@ function viewLow() {
 }
 
 function addInventory() {
-
+    //collect all items from MySQL
     connection.query("SELECT * FROM products", function (err, results) {
 
         if (err) throw err;
 
+        //prompt user to enter the id of the item and how many articles will be added to its inventory
         inquirer.prompt([
             {
                 name: "id",
@@ -123,20 +124,23 @@ function addInventory() {
             }
         ])
             .then(function (answer) {
+                //define a variable to be equal to the line in the database that matches the proper item
                 var updateItem;
                 for (var i = 0; i < results.length; i++) {
                     if (results[i].id === answer.id) {
                         updateItem = results[i];
                     }
                 }
+                //the new quantity of the item will be its existing quantity (in MySQL) plus the input here
                 var newQuantity = updateItem.stock_quantity + answer.moreitems;
 
+                //update the products in MySQL according to quantity entered here
                 connection.query("UPDATE products SET ? WHERE ?", [
                     {
                         stock_quantity: newQuantity
                     },
                     {
-                        product_name: updateItem.product_name
+                        id: updateItem.id
                     }
                 ],
                     function (err) {
@@ -148,4 +152,43 @@ function addInventory() {
 
     })
 
+}
+
+function addProduct() {
+
+    //ask the user for all of the details of the item they would like to add
+    inquirer.prompt([
+        {
+            name: "prodName",
+            type: "input",
+            message: "Enter the name of the product: "
+        },
+        {
+            name: "deptName",
+            type: "input",
+            message: "Enter the department of the item: "
+        },
+        {
+            name: "price",
+            type: "input",
+            message: "Price of the new product (without $ sign): "
+        },
+        {
+            name: "quantity",
+            type: "input",
+            message: "How many of these do you have in stock?"
+        }
+    ])
+    .then(function(answer) {
+
+        //enter the product details to the database
+        var query = connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (?,?,?,?)",[answer.prodName, answer.deptName, answer.price, answer.quantity],
+        function(err, res) {
+            if (err) throw err;
+            //show the user the entered row
+            console.log(res.affectedRows + " entered to database.");
+        }
+        ); 
+        bamazonManager();
+    })
 }
