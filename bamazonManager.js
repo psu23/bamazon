@@ -107,21 +107,21 @@ function viewLow() {
 function addInventory() {
     
     inquirer.prompt([
-        {
+        {//ask user which item (ID) they would like to add to
             name: "id",
             type: "input",
             message: "ID of product to which you are adding stock."
         },
-        {
+        {//ask user how many more articles of this product they are adding
             name: "moreArticles",
             type: "input",
             message: "How many items are you adding to the inventory?"
         }
     ])
     .then(function(answer){
-        
+        //select all the items
         connection.query("SELECT * FROM products", function(err, results) {
-            
+            //define a variable that has this id that is stored in the database
             var currentItem;
             
             for (var i=0; i<results.length; i++) {
@@ -129,11 +129,12 @@ function addInventory() {
                     currentItem = results[i];
                 }
             }
-
+            //add the user-given amount to the amount stored in the database
             var newQuantity = parseInt(currentItem.stock_quantity) + parseInt(answer.moreArticles);
 
             console.log("Updated amount of " + currentItem.product_name + ": " + newQuantity);
 
+            //update the quantity of this item in the database
             connection.query("UPDATE products SET ? WHERE ?", [{stock_quantity: newQuantity},{id: answer.id}],function(err, res) {
                 if (err) throw err;
                 else {
