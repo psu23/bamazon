@@ -179,9 +179,9 @@ function addProduct() {
         function(err, res) {
             if (err) throw err;
             //show the user the entered row
-            console.log(res.affectedRows + " entered to database.");
+            console.log("\n" + res.affectedRows + " entered to database.");
+            bamazonManager();
         }
         ); 
-        bamazonManager();
     })
 }
