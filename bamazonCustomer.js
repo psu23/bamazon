@@ -32,5 +32,32 @@ function bamazonCustomer() {
 
         console.log(inventoryTable.toString());
 
+        inquirer.prompt([
+            {
+                name: "id",
+                type: "number",
+                choices: "What is the id of the product you would like to buy?"
+            },
+            {
+                name: "quantity",
+                type: "number",
+                choices: "How many units would you like to purchase?"
+            }
+        ])
+        .then(function(answer){
+            var productID = answer.id;
+            var quantity = answer.quantity;
+
+            connection.query("SELECT * FROM products WHERE id=" + productID, function(err, item){
+                if (err) throw err;
+
+                if (item[0].stock_quantity - quantity >= 0) {
+                    console.log("Quantity in stock: " + item[0].stock_quantity + ". Quantity requested: " + quantity);
+                    console.log("Sufficient amount in stock. Your order of " + item[0].product_name + " can be fulfilled.");
+                }
+            })
+        })
+
+
     })
 }
