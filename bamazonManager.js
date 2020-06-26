@@ -13,9 +13,9 @@ var connection = mysql.createConnection({
 });
 
 //if connection is successful, alert user
-connection.connect(function (err) {
+connection.connect(function(err){
     if (err) throw err;
-    console.log("Connected to Bamazon Manager as id: " + connection.threadId);
+    console.log("Connected to Bamazon Customer as id: " + connection.threadId);
     bamazonManager();//run function that takes in user requests
 });
 
@@ -25,7 +25,7 @@ function bamazonManager() {
         name: "option",
         type: "list",
         message: "Choose an option: ",
-        choice: [
+        choices: [
             "View products for sale",
             "View low inventory",
             "Add to inventory",
@@ -73,10 +73,10 @@ function viewProducts() {
 
         //display data in node application in terminal/gitbash
         console.log(inventoryTable.toString());
-
+        bamazonManager();
     });
 
-    bamazonManager();
+    
 }
 
 function viewLow() {
@@ -98,58 +98,50 @@ function viewLow() {
 
         //display data in node application in terminal/gitbash
         console.log(inventoryTable.toString());
-
+        bamazonManager();
     });
 
-    bamazonManager();
+    
 }
 
 function addInventory() {
-    //collect all items from MySQL
-    connection.query("SELECT * FROM products", function (err, results) {
-
-        if (err) throw err;
-
-        //prompt user to enter the id of the item and how many articles will be added to its inventory
-        inquirer.prompt([
-            {
-                name: "id",
-                type: "input",
-                message: "Enter the id of the product whose inventory you would like to increase: "
-            },
-            {
-                name: "moreitems",
-                type: "input",
-                message: "How many items will be added?"
-            }
-        ])
-            .then(function (answer) {
-                //define a variable to be equal to the line in the database that matches the proper item
-                var updateItem;
-                for (var i = 0; i < results.length; i++) {
-                    if (results[i].id === answer.id) {
-                        updateItem = results[i];
-                    }
+    
+    inquirer.prompt([
+        {
+            name: "id",
+            type: "input",
+            message: "ID of product to which you are adding stock."
+        },
+        {
+            name: "moreArticles",
+            type: "input",
+            message: "How many items are you adding to the inventory?"
+        }
+    ])
+    .then(function(answer){
+        
+        connection.query("SELECT * FROM products", function(err, results) {
+            
+            var currentItem;
+            
+            for (var i=0; i<results.length; i++) {
+                if (results[i].id == answer.id) {
+                    currentItem = results[i];
                 }
-                //the new quantity of the item will be its existing quantity (in MySQL) plus the input here
-                var newQuantity = updateItem.stock_quantity + answer.moreitems;
+            }
 
-                //update the products in MySQL according to quantity entered here
-                connection.query("UPDATE products SET ? WHERE ?", [
-                    {
-                        stock_quantity: newQuantity
-                    },
-                    {
-                        id: updateItem.id
-                    }
-                ],
-                    function (err) {
-                        if (err) throw err;
-                    }
-                );
-                    console.log("Updated quantity of " + updateItem.product_name + " to " + newQuantity);
+            var newQuantity = parseInt(currentItem.stock_quantity) + parseInt(answer.moreArticles);
+
+            console.log("Updated amount of " + currentItem.product_name + ": " + newQuantity);
+
+            connection.query("UPDATE products SET ? WHERE ?", [{stock_quantity: newQuantity},{id: answer.id}],function(err, res) {
+                if (err) throw err;
+                else {
+                    bamazonManager();
+                }
             })
 
+        })
     })
 
 }
