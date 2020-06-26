@@ -1,6 +1,6 @@
 # Bamazon (Command line store application)
 
-Bamazon is a command-line Node.js application that mimics a shopping site. It allows users to purchase items, view inventories and several other features. There are two applications: one for customers and one for users
+Bamazon is a command-line Node.js application that mimics a shopping site. It allows users to purchase items, view inventories and several other features. There are two applications: one for customers and one for managers (the latter providing more options).
 
 # Application Organization
 
@@ -24,6 +24,8 @@ Bamazon is a command-line Node.js application that mimics a shopping site. It al
 3. Enter the id of the item you would like to buy.
 
 4. If there are enough articles of the product you wish to buy, your total price will be shown.
+
+5. An updated table of the inventory will also be shown after placing your order request.
 
 ![gif animation of bamazonCustomer](./gifs/customer.gif)
 
