@@ -53,6 +53,8 @@ item you are adding more of, then enter the quantity of this item that you are a
 
 # Technologies Used
 
+* JavaScript
+
 * Node.js
 
 * SQL
