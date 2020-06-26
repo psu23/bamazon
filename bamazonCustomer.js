@@ -36,12 +36,12 @@ function bamazonCustomer() {
             {
                 name: "id",
                 type: "number",
-                choices: "What is the id of the product you would like to buy?"
+                message: "What is the id of the product you would like to buy?"
             },
             {
                 name: "quantity",
                 type: "number",
-                choices: "How many units would you like to purchase?"
+                message: "How many units would you like to purchase?"
             }
         ])
         .then(function(answer){
@@ -53,11 +53,28 @@ function bamazonCustomer() {
 
                 if (item[0].stock_quantity - quantity >= 0) {
                     console.log("Quantity in stock: " + item[0].stock_quantity + ". Quantity requested: " + quantity);
-                    console.log("Sufficient amount in stock. Your order of " + item[0].product_name + " can be fulfilled.");
+                    console.log("Sufficient amount in stock. Your order for the " + item[0].product_name + " can be fulfilled.");
+                    console.log("Your total is: $" + (answer.quantity * item[0].price) + ".");
+                    
+                    connection.query("UPDATE products SET stock_quantity=? WHERE id=?", 
+                    [item[0].stock_quantity - quantity, productID],
+                    function(err){
+                        if (err) throw err;
+                        console.log("This is run");
+                        bamazonCustomer();
+                    }
+                    );
+            
                 }
-            })
-        })
+
+                else {
+                    console.log("Insufficient quantity! Bamazon has only " + item[0].quantity + item[0].product_name + " in stock. Please try again.");
+                    console.log("else is run");
+                    bamazonCustomer();
+                }
+            });
+        });
 
 
-    })
+    });
 }
