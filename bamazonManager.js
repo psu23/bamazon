@@ -80,8 +80,8 @@ function viewProducts() {
 }
 
 function viewLow() {
-
-    connection.query("SELECT * FROM products", function (err, res) {
+    //collect only items in the inventory that have fewer than 5 articles in stock
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
         if (err) throw err;
 
         //using cli-table, format table to show data
@@ -102,4 +102,50 @@ function viewLow() {
     });
 
     bamazonManager();
+}
+
+function addInventory() {
+
+    connection.query("SELECT * FROM products", function (err, results) {
+
+        if (err) throw err;
+
+        inquirer.prompt([
+            {
+                name: "id",
+                type: "input",
+                message: "Enter the id of the product whose inventory you would like to increase: "
+            },
+            {
+                name: "moreitems",
+                type: "input",
+                message: "How many items will be added?"
+            }
+        ])
+            .then(function (answer) {
+                var updateItem;
+                for (var i = 0; i < results.length; i++) {
+                    if (results[i].id === answer.id) {
+                        updateItem = results[i];
+                    }
+                }
+                var newQuantity = updateItem.stock_quantity + answer.moreitems;
+
+                connection.query("UPDATE products SET ? WHERE ?", [
+                    {
+                        stock_quantity: newQuantity
+                    },
+                    {
+                        product_name: updateItem.product_name
+                    }
+                ],
+                    function (err) {
+                        if (err) throw err;
+                    }
+                );
+                    console.log("Updated quantity of " + updateItem.product_name + " to " + newQuantity);
+            })
+
+    })
+
 }
